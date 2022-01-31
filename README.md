@@ -6,4 +6,4 @@ Following a tutorial to create a music_controller webapp using React and Django.
  - `cd` in to `/frontend` and run `npm i` to install all the necessary dependencies.
 
 # For the future:
- - I intend to dockerize the app so running the app will be easier.
+ - I intend to dockerize the app so running it will be easier.
