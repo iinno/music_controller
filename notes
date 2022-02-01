@@ -1,0 +1,25 @@
+Improvements to make:
+
+   Design:
+     - Routing should probably be done in App.js rather than homepage.js
+
+   Project:
+     - Maybe use webpack-server rather than just webpack. Add Hotmodule
+
+     - Dockerize or use virtual env
+  
+
+   Etc/Problems:
+     - Webpack was being fairly slow when using VS Code as the IDE, adding the following helped:
+```
+watchOptions: {
+  poll: true,
+  ignored: /node_modules/
+}
+```
+And this also if you are using Ubuntu 20.0:
+```
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+
+     

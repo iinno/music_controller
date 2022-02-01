@@ -1,24 +1,40 @@
-import React, { Component } from "react";
-import JoinRoomPage from "./JoinRoomPage";
-import CreateRoomPage from "./CreateRoomPage"
-import Room from "./Room"
-import { BrowserRouter as Router, Routes, Route, Link, Redirect } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Grid, Button, ButtonGroup, Typography } from '@material-ui/core';
+import { useNavigate, Link } from "react-router-dom";
 
-export default class HomePage extends Component {
-    constructor(props) {
-        super(props);
-    }
+// The example of homepage having a unclean code for it like below is the reason App.js should contain the routing.
+function HomePage() {
+    let navigate = useNavigate();
 
-    render() {
-        return (
-            <Router>
-                <Routes>
-                    <Route path='/' element={<p>This is the home page.</p>} />
-                    <Route path='/join' element={<JoinRoomPage/>} />
-                    <Route path='/create' element={<CreateRoomPage/>} />
-                    <Route path='/room/:roomCode' element={<Room/>} />
-                </Routes>
-            </Router>
-        );
-    }
-}
+    useEffect(() => {
+        fetch('/api/user-in-room')
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.code) {
+                navigate('/room/' + data.code)
+            }
+        });
+    });
+
+    return  (
+        <Grid container  spacing={3}>
+            <Grid item xs={12} align="center">
+                <Typography variant="h3" compact="h3">
+                    House Party
+                </Typography>
+            </Grid>
+            <Grid item xs={12} align="center">
+                <ButtonGroup disableElevation variant="contained" color="primary">
+                    <Button color="primary" to='/join' component={Link}>
+                        Join a Room
+                    </Button>
+                    <Button color="secondary" to='/create' component={Link}>
+                        Create a Room
+                    </Button>
+                </ButtonGroup>
+            </Grid>
+        </Grid>
+    );
+};
+
+export default HomePage; 
