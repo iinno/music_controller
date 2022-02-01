@@ -1,5 +1,5 @@
 # music_controller
-Following a tutorial to create a music_controller webapp using React and Django.
+Creating a music_controller webapp using React and Django.
 
 # To run the app:
  - Make sure that you have Django installed and djangorestframework modules installed through either pip or something else: `pip install django djangorestframework`
