@@ -11,7 +11,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 
-function CreateRoomPage() {
+function CreateRoomPage(props) {
     let navigate = useNavigate();
     const defaultVotes = 2;
     const [guestCanPause, setGuestCanPause] = useState(true);
