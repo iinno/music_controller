@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Button, Typography } from '@material-ui/core';
 import CreateRoomPage from './CreateRoomPage';
@@ -9,12 +9,15 @@ function Room() {
         votesToSkip: 2,
         guestCanPause: false,
         isHost: false,
-        showSettings: false,
-    })
-
+    });
+    const [showSettings, setShowSettings] = useState(false)
     const { roomCode } = useParams();
 
     useEffect(() => {
+        getRoomSettings();
+    }, [showSettings]);
+
+    const getRoomSettings = useCallback(() => {
         fetch("/api/get-room" + "?code=" + roomCode)
         .then(response => {
             if (!response.ok) {
@@ -24,16 +27,13 @@ function Room() {
             return response.json()
         })
         .then(data => {       
-            console.log(data)
-            // Here, I used to call hooks for each variable but that would result in a rerender each time.
             setRoomSettings({
                 votesToSkip: data.votes_to_skip,
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host,
-                ...data
             });
         });
-    }, []);
+    })
 
     const handleLeaveButtonPressed = () => {
         const requestOptions = {
@@ -47,16 +47,12 @@ function Room() {
     };
 
     const handleShowSettings = () => {
-        setRoomSettings ({
-            ...roomSettings,
-            showSettings: !roomSettings.showSettings
-        })
-        console.log(roomSettings.showSettings)
+        setShowSettings(!showSettings)
     };
 
     const settingsButton = <Button variant="contained" color="primary" onClick={handleShowSettings}>Settings</Button>;
 
-    if (!roomSettings.showSettings) {
+    if (!showSettings) {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
@@ -92,9 +88,9 @@ function Room() {
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
                     <CreateRoomPage 
+                        propVotesToSkip={roomSettings.votesToSkip} 
+                        propGuestCanPause={roomSettings.guestCanPause}
                         update={true} 
-                        votesToSkip={roomSettings.votesToSkip} 
-                        guestCanPause={roomSettings.guestCanPause}
                         roomCode={roomCode}
                     />
                 </Grid>
