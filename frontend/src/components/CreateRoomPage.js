@@ -17,7 +17,8 @@ function CreateRoomPage({ propVotesToSkip=2, propGuestCanPause=true, update=fals
     let navigate = useNavigate();
     const [guestCanPause, setGuestCanPause] = useState(propGuestCanPause);
     const [votesToSkip, setVotesToSkip] = useState(propVotesToSkip);
-    const [updateStatus, setUpdateStatus] = useState("");
+    const [updateStatus, setUpdateStatus] = useState("success");
+    const [showUpdateStatus, setShowUpdateStatus] = useState(false)
 
     const handleVotesChange = e => {
         setVotesToSkip(e.target.value);
@@ -60,6 +61,7 @@ function CreateRoomPage({ propVotesToSkip=2, propGuestCanPause=true, update=fals
             } else {
                 setUpdateStatus("error")
             }
+            setShowUpdateStatus(true)
         });
     };
 
@@ -89,15 +91,12 @@ function CreateRoomPage({ propVotesToSkip=2, propGuestCanPause=true, update=fals
     return (
          <Grid container spacing={1}>
             <Grid item xs = {12} align="center">
-                <Collapse in={updateStatus != ""}>
-                    {updateStatus == "success" ? (
-                        <Alert severity="success" onClose={() => {setUpdateStatus("")}}>
-                            Updated room settings sucessfully!
-                        </Alert>) : (
-                        <Alert severity="error" onClose={() => {setUpdateStatus("")}}>
-                            Failed to update room settings!
-                        </Alert>)
-                    }
+                <Collapse in={showUpdateStatus}>
+                    <Alert severity={updateStatus} onClose={() => {setShowUpdateStatus(false)}}>
+                        {updateStatus == "success" ? 
+                            "Updated room successfully!" : "Failed to update room!"
+                        }
+                    </Alert>
                 </Collapse>
             </Grid>
             <Grid item xs = {12} align="center">
