@@ -2,4 +2,6 @@
     "git.ignoreLimitWarning": true,
     "git.path": "/usr/bin/git",
     "git.enabled": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
 }
