@@ -6,6 +6,22 @@ import SkipNextIcon from "@material-ui/icons/SkipNext";
 
 function  MusicPlayer({song}) {
 
+    const pauseSong = () => {
+        const requestOptions = {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+        };
+        fetch("/spotify/pause", requestOptions);
+    }
+
+    const playSong = () => {
+        const requestOptions = {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+        };
+        fetch("/spotify/play", requestOptions);
+    }
+
     return (
         <Card>
             <Grid container alignItems='center'>
@@ -20,7 +36,7 @@ function  MusicPlayer({song}) {
                         {song.artist}
                     </Typography>
                     <div>
-                        <IconButton>
+                        <IconButton onClick={() => {song.is_playing ? pauseSong() : playSong()}}>
                             {song.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
                         </IconButton>
                         <IconButton>
