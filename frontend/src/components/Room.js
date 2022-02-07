@@ -1,18 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Button, Typography } from '@material-ui/core';
 import CreateRoomPage from './CreateRoomPage';
+import MusicPlayer from './MusicPlayer'
 
 function Room() {
     let navigate = useNavigate();
+    let interval = null;
     const [roomSettings, setRoomSettings] = useState({
         votesToSkip: 2,
         guestCanPause: false,
         isHost: false,
     });
-    const [showSettings, setShowSettings] = useState(false)
-    const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false)
+    const [showSettings, setShowSettings] = useState(false);
+    const [spotifyAuthenticated, setSpotifyAuthenticated] = useState(false);
+    const [song, setSong] = useState({});
     const { roomCode } = useParams();
+
+    // Should use websockets instaed of polling but spotify API does not support it.
+    useEffect(() => {
+        if (spotifyAuthenticated) {
+            interval = setInterval(getCurrentSong, 1000);
+        }
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        }
+    }, [spotifyAuthenticated]);
 
     useEffect(() => {
         fetch("/api/get-room" + "?code=" + roomCode)
@@ -29,11 +44,25 @@ function Room() {
                 guestCanPause: data.guest_can_pause,
                 isHost: data.is_host,
             });
-            if (data.is_host) {
+            if (!spotifyAuthenticated && data.is_host) {
                 authenticateSpotify();
             };
         });
     }, [showSettings]);
+
+    const getCurrentSong = () => {
+        fetch('/spotify/current-song')
+        .then(response => {
+            if (!response.ok) {
+                return {}
+            } else {
+                return response.json()
+            }
+        })
+        .then(data => {
+            setSong(data)
+        });
+    }
 
     const authenticateSpotify = () => {
         fetch("/spotify/is-authenticated")
@@ -75,21 +104,7 @@ function Room() {
                         Code: {roomCode}
                     </Typography>
                 </Grid>
-                <Grid item xs={12} align="center">
-                    <Typography variant="h4" component="h4">
-                        Votes: {roomSettings.votesToSkip}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} align="center">
-                    <Typography variant="h4" component="h4">
-                        Guest Can Pause: {roomSettings.guestCanPause.toString()}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} align="center">
-                    <Typography variant="h4" component="h4">
-                        Host: {roomSettings.isHost.toString()}
-                    </Typography>
-                </Grid>
+                <MusicPlayer song={song} />
                 <Grid item xs={12} align="center">
                     <Button variant="contained" color="secondary" onClick={handleLeaveButtonPressed}>
                         Leave Room
