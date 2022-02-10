@@ -73,6 +73,7 @@ function Room() {
                 fetch("/spotify/get-auth-url")
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     window.location.replace(data.url);
                 });
             };
