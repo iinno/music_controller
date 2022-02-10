@@ -1,4 +1,4 @@
-# Music controller
+# Music Controller
 Created a music controller webapp using React and Django based on a tutorial.
 
 # To run the app
